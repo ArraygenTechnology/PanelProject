@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | Dashboard </title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- IonIcons -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+
+
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+  <!-- Bootstrap4 Duallistbox -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css') }}">
+  <!-- BS Stepper -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bs-stepper/css/bs-stepper.min.css') }}">
+  <!-- dropzonejs -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/dropzone/min/dropzone.min.css') }}">
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+  
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}">
+</head>
+
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">Home</a>
+      </li>
+     
+    </ul>
+
+ 
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">   
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+     <!--  <li class="nav-item">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+          <i class="fas fa-th-large"></i>
+        </a>
+      </li> -->
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-light-success elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="{{ url_for('static', filename='dist/img/Logo1.jpg')}}" alt="Logo" class="brand-image" style="opacity: .8">
+      <span class="brand-text font-weight-light text-success"><b>Admin</b></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          {% if session.gender == 'Female' %}
+          <img src="{{ url_for('static', filename='dist/img/Female.jpg') }}" class="img-circle elevation-2" alt="User Image">
+          {% else %}
+          <img src="{{ url_for('static', filename='dist/img/Male.jpg') }}" class="img-circle elevation-2" alt="User Image">
+          {% endif %}
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{session.f_name}} {{session.l_name}}</a>
+        </div>
+      </div>
+
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+           <li class="nav-item">
+            <a href="/dashboard" class="nav-link active">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+               
+              </p>
+            </a>
+          </li>
+          {% if (session.role == 'Admin') or (session.role == 'Technician')  %}
+          <li class="nav-item menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Patient
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/patient/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Patient</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/analysis_view" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Analysis</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/patients_view" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Patient</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% endif %}
+          {% if (session.role == 'Admin') or (session.role == 'Physician')  %}
+          <li class="nav-item">
+            <a href="/results_view" class="nav-link">
+              <i class="fas fa-user-md nav-icon"></i>
+              <p>
+                View Results
+              </p>
+            </a>
+          </li>
+          {% endif %}
+          {% if session.role == 'Admin'  %}
+          <li class="nav-item menu-open">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-users-cog"></i>
+              <p>
+                Users
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/sys_user" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add User</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/sys_users_view" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View User</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>
+                Panels
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+             {% for panel in session.sidebar_panel %}
+             {% if loop.index in [1] %}
+              <li class="nav-item">
+                <a href="/panel_category_{{panel.id}}" class="nav-link">
+                  <i class="fas {{panel.icon}} nav-icon"></i>
+                  <p>{{panel.name}}</p>
+                </a>
+              </li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a href="/sys_user_logout" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
+              </p>
+            </a>
+          </li>
+          
+         
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+   {% block body %}
+
+   {% endblock %}
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2020-2021<!--  <a href="https://arraygen.com" target="_blank">Arraygen Technology Pvt Ltd</a> -->.</strong>
+    All rights reserved.
+   
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<!-- jQuery UI 1.11.4 -->
+<script src="{{ url_for('static', filename='plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE -->
+<script src="{{ url_for('static', filename='dist/js/adminlte.js') }}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{{ url_for('static', filename='dist/js/demo.js') }}"></script>
+
+<!-- AdminLTE App -->
+<!-- Select2 -->
+<script src="{{ url_for('static', filename='plugins/select2/js/select2.full.min.js') }}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{{ url_for('static', filename='plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
+<!-- InputMask -->
+<script src="{{ url_for('static', filename='plugins/moment/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/inputmask/jquery.inputmask.min.js') }}"></script>
+<!-- date-range-picker -->
+<script src="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
+<!-- bootstrap color picker -->
+<script src="{{ url_for('static', filename='plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+<!-- Bootstrap Switch -->
+<script src="{{ url_for('static', filename='plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+<!-- BS-Stepper -->
+<script src="{{ url_for('static', filename='plugins/bs-stepper/js/bs-stepper.min.js') }}"></script>
+<!-- dropzonejs -->
+<script src="{{ url_for('static', filename='plugins/dropzone/min/dropzone.min.js') }}"></script>
+<!-- Page specific script -->
+
+<!-- DataTables  & Plugins -->
+<script src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/pdfmake/vfs_fonts.js') }}"></script>
+
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+<!-- Users module display date in form -->
+<!-- CK Editor -->
+<script src="{{ url_for('static', filename='plugins/ckeditor/ckeditor.js') }}"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
+<!-- SweetAlert2 -->
+<script src="{{ url_for('static', filename='plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+
+
+<!-- bs-custom-file-input -->
+<script src="{{ url_for('static', filename='plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<!-- Page specific script -->
+<!-- <script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script> -->
+<script>
+$(function () {
+  bsCustomFileInput.init();
+});
+</script>
+<script>
+    var Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    function convertDate(date){
+      if(date != null){
+
+       date = new Date(date);
+       return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear())
+
+      }else{
+        return "No Date Found"
+      }
+    }
+</script>
+<script>
+  $(function () {
+    // Replace the <textarea id="editor1"> with a CKEditor
+    // instance, using default configuration.
+    CKEDITOR.replace('editor1')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor2')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor3')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor4')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor5')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor6')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor7')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+
+    CKEDITOR.replace('editor8')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+  });
+
+</script>
+<script>
+  $(function() {
+    var d = new Date();
+
+    var month = d.getMonth()+1;
+    var day = d.getDate();
+
+    var output = (month<10 ? '0' : '') + month + '/' +
+        (day<10 ? '0' : '') + day + '/' +d.getFullYear() ;
+
+    if($(".current_date").val() == ""){
+      $(".current_date").val(output);
+    }
+  });
+
+  $( ".weight, .height1 , .height2" ).change(function() {
+    weight = parseInt($('.weight').val());
+    height1 = parseInt($('.height1').val());
+    height2 = parseInt($('.height2').val());
+    height = (height1*12)+height2
+    $('.height').val(height);
+    //BMI = (   Weight in Pounds / (Height in inches) x (Height in inches)  ) x 703
+    var bmi = (weight / (height * height)) * 703 ;
+    $('.bmi').val(bmi);
+  });
+   $('#submit_patient').click(function() {
+      checked = $("input[type=checkbox]:checked").length;
+
+      if(!checked) {
+        $('#panel_error').html("You must have to check atleast one checkbox");
+        return false;
+      }
+
+    });
+
+    function dna_resultFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt")) ){
+          $("#dna_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
+        }else{
+          $("#dna_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of dna result");
+          //$("#dna_result_name"+i).text("This file is not allowed to submit"); 
+        }
+    }
+
+    function blood_resultFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#blood_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');  
+        }else{
+          $("#blood_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of blood result");
+          //$("#blood_result_name"+i).text("This file is not allowed to submit"); 
+        }
+    }
+
+    function allergy_resultFunc(e,i){
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#allergy_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
+        }else{
+          $("#allergy_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of allergy result");
+          //$("#allergy_result_name"+i).text("This file is not allowed to submit"); 
+        }
+    }
+
+
+    function dna_result_rFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt")) ){
+          $("#dna_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#dna_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of dna result");
+        }
+    }
+
+    function blood_result_rFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#blood_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#blood_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of blood result");
+          //$("#blood_result_name"+i).text("This file is not allowed to submit");
+        }
+    }
+
+    function allergy_result_rFunc(e,i){
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#allergy_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#allergy_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of allergy result");
+          //$("#allergy_result_name"+i).text("This file is not allowed to submit");
+        }
+    }
+</script>
+<!-- Users Modules Address display in modal -->
+<script type="text/javascript">
+$('#userAddress').on('show.bs.modal', function (event) {
+  var myVal = $(event.relatedTarget).data('address');
+  if (myVal== ""){
+    $(this).find(".modal-body #modalAddress").text("NA");
+  }else{
+    $(this).find(".modal-body #modalAddress").text(myVal);
+  }  
+});
+</script>
+ <script type="text/javascript">
+      $('#confirm_password').change(function(){
+
+        if ($('#password').val() == $('#confirm_password').val()) { 
+            //alert("..");
+            $("#confirm_password").removeClass("is-invalid");
+            $("#confirm_password").addClass("is-valid");
+            $('#password-error').html('');
+
+          } else {
+
+            $("#confirm_password").removeClass("is-valid");
+            $("#confirm_password").addClass("is-invalid");
+            $('#confirm_password').val("");
+            $('#password-error').html('Entered password was incorrect.. Please write it again');
+          } 
+      });
+    </script>
+    <script>
+  $(function () {
+    $("#dataTable1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print"] //, "colvis"
+    }).buttons().container().appendTo('#dataTable1_wrapper .col-md-6:eq(0)');
+    $("#dataTable2").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print"] //, "colvis"
+    }).buttons().container().appendTo('#dataTable2_wrapper .col-md-6:eq(0)');
+    /*$('#dataTable2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });*/
+  });
+
+   //Date range picker
+    $('#from_to_date_input').daterangepicker({
+      locale: {
+        format: 'YYYY/MM/DD'
+      },
+      setDate : $('#from_to_date_input').val()
+    });
+
+    //Date range picker
+    $('#dob').datetimepicker({
+        format: 'L',
+        setDate : $('#dob').val()
+    });
+    $("#dob").on("change.datetimepicker", ({date, oldDate}) => {              
+                 //Use date and oldDate here
+                 dob = new Date(date);
+                 var today = new Date();
+                  var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+                  $('.age').val(age);
+    });
+
+    $('#c_date').datetimepicker({
+        format: 'L',
+        setDate : $('#c_date').val()
+    });
+
+    $('#r_date').datetimepicker({
+        format: 'L',
+        setDate : $('#c_date').val()
+    });
+
+    //Date range picker
+    $('#date').datetimepicker({
+        format: 'L',
+        setDate : $('#date').val(),
+        disable :true
+    });
+</script>
+<script type="text/javascript">
+  
+function PatientViewModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientById',
+        data: {
+            csrf_token : csrftoken,
+            id: $(elm).attr('data-id')
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+            $('#modalPatientGender').html(res.gender);
+            $('#modalPatientEmailId').html(res['email']);
+            $('#modalPatientContactNo').html(res['contact_no']);
+            $('#modalPatientEthnicity').html(res['ethnicity']);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+function PatientTechnicianStatus(i) {
+  //alert(i);
+  var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+      
+        url: '/updatePatientTechnicianStatus',
+        data: {
+            csrf_token : csrftoken,
+            id : $('#pantient_panel_id'+i).val(),
+            patient_id  : $('#patient_id'+i).val(),
+            panel_id  : $('#panel_id'+i).val(),
+            technician_status  : $('#technician_status'+i).val()
+        },
+        type: 'POST',
+        success: function(res) {
+          var res = JSON.parse(res);
+          Toast.fire({
+            icon: 'success',
+            title: " "+res.patient.patient_id+" "+res.panel.name+" Report Technician Status Updated Sucessfully"
+          });
+           //$('#status_update_msg'+i).html(res)
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PatientEmailModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientById',
+        data: {
+            csrf_token : csrftoken,
+            id: $(elm).attr('data-id')
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+            $('#patient_id').val(res.id);
+            $('#id').val($(elm).attr('data-patient_panel_id'));
+            $('#panel_id').val($(elm).attr('data-panel_id'));
+            $('#patientNameModal').html(res.f_name+" "+res.l_name);
+            $('#toEmailModal').val(res['email']);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PatientPhysicianDetails(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientPhysicianDetails',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id')
+        },
+        type: 'POST',
+        success: function(res) {
+
+            var res = JSON.parse(res);  
+
+            if (res.physician_status == null){
+              $('#modalPhysicianStatus').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianStatus').html(res.physician_status);
+            }
+
+            if (res.physician_note == null){
+              $('#modalPhysicianNote').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianNote').html(res.physician_note);
+            }
+
+            if (res.physician_status_date == null){
+              $('#modalPhysicianStatusDate').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianStatusDate').html(convertDate(res.physician_status_date));
+            }
+
+            if (res.second_result == null){
+              $('#modalPhysicianReport').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianReport').html("<a target='_blank' href='download_analysis_data/"+res.second_result+"'> view </a>");
+            }
+            
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PhysiciantNoteModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientPhysicianDetails',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id')
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);  
+            $('#id').val(res.id);
+            $('#patient_id').val(res.patient.id);
+            $('#panel_id').val(res.panel.id);
+            $('#physician_status').val(res.physician_status);
+            $('input[name=include_note]').removeAttr('checked');
+            $("input[name=include_note][value=" + res.include_note + "]").attr('checked', 'checked');
+            CKEDITOR.instances.editor1.setData(res.physician_note);//$('#editor1').val();
+            $('#physician_status_date').html(convertDate(res.physician_status_date));
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function ReportFormModal(elm) {
+  var report_type = $(elm).attr('data-report')
+  var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getReportFields',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id'),
+            report_type  : report_type,
+        },
+        type: 'POST',
+        success: function(res) {
+            //alert(res);
+            var res = JSON.parse(res); 
+            $('#id').val(res.id);
+            $('#patient_id').val(res.patient.id);
+            $('#panel_id').val(res.panel.id);
+            $('#modal_report_type').html(report_type);
+            $('#report_type').val(report_type); 
+            $('#submitted_date').html(convertDate(res.submitted_date));
+            var formData = "";
+
+            $.each(res.formData, function(i, item) {
+                formData += '<div class="col-sm-6">';
+                formData += '<div class="form-group"><label>';
+                formData += res.formData[i].name;
+                formData += '</label><input type="number" class="form-control"  name="'+res.formData[i].id+'" placeholder="'+item.name+'" > </div>';
+                formData += '</div>';
+            });
+            /*
+            $.each(res.formData, function (key, value) { 
+              
+            }*/
+            $('#formData').html(formData); 
+
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  function traitModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getTraits',
+        data: {
+            id: $(elm).attr('data-id'),
+            csrf_token: csrftoken
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+            $('#modalDescription').html(res.about);
+            $('#modalDietarySourcePlant').html(res.source_plant);
+            $('#modalDietarySourceAnimal').html(res.source_animal);
+            $('#modalDietarySourceOthers').html(res.source_others);
+            $('#modalTypicalRes').html(res.typical_res);
+            $('#modalSlightlyEnhancedRes').html(res.slightly_enhanced_res);
+            $('#modalEnhancedRes').html(res.enhanced_res);
+            $('#modalWhatToDo').html(res.about);
+
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  function geneTableDisplay(res){
+    var html = "";
+      $.each(res, function(index, value){
+        var value = JSON.parse(value);
+        html += '<tr>';
+        html += '<td>'+value.gene+'</td>';
+        html += '<td>'+value.rs_id+'</td>';
+        html += '<td>'+value.genotype+'</td>';
+        html += '<td>'+value.score+'</td>';
+        html += '<td>'+value.allele+'</td>';
+        html += '<td><a href="#" onclick="edittraitGeneModal('+value.id+')"><i class="fas fa-edit"  aria-hidden="true"></i></a> &nbsp;\
+                     <a href="#" onclick=" deleteTraitAlgorithmInfoModal('+value.id+')" class="text-danger" onclick="return confirm(\'Are you sure you want to delete this?\');">\
+                      <i class="fa fa-trash" aria-hidden="true"></i>\
+                      </a>\
+                  </td>';              
+        html += '<tr>';
+      }); 
+      return html;
+  }
+
+  
+
+  function deleteTraitAlgorithmInfoModal(elm) {
+    var id = parseInt(elm);
+    var csrftoken = "{{ csrf_token() }}";
+    //alert(csrftoken);
+    $.ajax({
+        url: '/deleteTraitAlgorithmInfo',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+          Toast.fire({
+                icon: 'success',
+                title: " Successfully Done !"
+          });
+          html = geneTableDisplay(res) ;
+          $('#TraitGreneModalTable').html(html);
+        },
+        error : function(error){
+          alert(error);
+        }
+    });
+  }
+
+  function edittraitGeneModal(elm) {
+    var id = parseInt(elm);
+    var csrftoken = "{{ csrf_token() }}";
+    //alert(csrftoken);
+    $.ajax({
+        url: '/getSingleTraitAlgorithmInfo',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);   
+            $('#gene_id').val(res.id);
+            $('#gene').val(res.gene);
+            $('#rs_id').val(res.rs_id);
+            $('#genotype').val(res.genotype);
+            $('#score').val(res.score);
+            $('#allele').val(res.allele); 
+        },
+        error : function(error){
+          alert(error);
+        }
+    });
+  }
+  function traitGeneModal(elm) {
+    var id= $(elm).attr('data-trait-id');
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getTraitAlgorithmInfo',
+        data: {
+
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            //alert(res);
+            //var res = JSON.parse(res);           
+            $('#trait_id').val(id);
+            html = geneTableDisplay(res) ;
+            $('#TraitGreneModalTable').html(html);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  $('#traitGeneDetailsForm').on('submit', function(e){
+    $.ajax({
+      data: {
+        csrf_token:$('#csrf_token').val(),
+        trait_id : $('#trait_id').val(),
+        gene_id : $('#gene_id').val(),
+        gene : $('#gene').val(),
+        rs_id : $('#rs_id').val(),
+        genotype : $('#genotype').val(),
+        score : $('#score').val(),
+        allele : $('#allele').val()
+      },
+      type: 'POST',
+      url : '/trait_gene_add_update'
+    })
+    .done(function(data1){
+      //var data1 = JSON.parse(data1);
+      Toast.fire({
+            icon: 'success',
+            title: " Successfully Done !"
+      });
+      html = geneTableDisplay(data1) ;
+      //alert(html);
+      $('#TraitGreneModalTable').html(html);
+      $('#gene_id').val("0")
+      $('#gene').val("");
+      $('#rs_id').val("");
+      $('#genotype').val("");
+      $('#score').val("");
+      $('#allele').val("");
+    })
+    e.preventDefault();
+  });
+
+ function reportForm() {
+
+   var form = document.getElementById("ReportForm").elements;
+   var data = "";
+   for (i=0; i< form.length; i++){
+      if (form[i].name != ""){
+        data += form[i].name +":"+form[i].value+",";
+      }
+    }
+    data = data.replace(/,\s*$/, "")
+    $.ajax({
+        url: '/submitReport',
+        data: {
+          data
+        },
+        type: 'POST',
+        success: function(res) {
+          Toast.fire({
+                icon: 'success',
+                title: " Successfully Done !"
+          });
+          $('#ReportFormModal').modal('hide');
+        }
+    });
+  }
+
+  function bloodDetailsModal(elm) {
+    var id= $(elm).attr('data-trait-id');
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getBloodDetails',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+
+            $('#trait_id_blood').val(id);
+            $('#blood_id').val(res.id);
+            if(res.id != 0){
+              $('#blood_min').val(res.min);
+              $('#blood_max').val(res.max);
+              $('#blood_extended_range').val(res.extended_range);
+            }else{
+              $('#blood_min').val("");
+              $('#blood_max').val("");
+              $('#blood_extended_range').val("");
+            }
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  $('#bloodDetailsForm').on('submit', function(e){
+    $.ajax({
+      data: {
+        csrf_token:$('#csrf_token').val(),
+        trait_id : $('#trait_id_blood').val(),
+        id : $('#blood_id').val(),
+        min : $('#blood_min').val(),
+        max : $('#blood_max').val(),
+        extended_range : $('#blood_extended_range').val(),
+      },
+      type: 'POST',
+      url : '/blood_details_add_update'
+    })
+    .done(function(data1){
+      //var data1 = JSON.parse(data1);
+      Toast.fire({
+            icon: 'success',
+            title: "Successfully Done !"
+      });
+    })
+    e.preventDefault();
+  });
+
+
+  function allergyDetailsModal(elm) {
+    var id= $(elm).attr('data-trait-id');
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getAllergyDetails',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+
+            $('#trait_id_allergy').val(id);
+            $('#allergy_id').val(res.id);
+            if(res.id != 0){
+              $('#allergy_min').val(res.min);
+              $('#allergy_max').val(res.max);
+            }else{
+              $('#allergy_min').val("");
+              $('#allergy_max').val("");
+            }
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  $('#allergyDetailsForm').on('submit', function(e){
+    $.ajax({
+      data: {
+        csrf_token : $('#csrf_token').val(),
+        trait_id : $('#trait_id_allergy').val(),
+        id : $('#allergy_id').val(),
+        min : $('#allergy_min').val(),
+        max : $('#allergy_max').val()
+      },
+      type: 'POST',
+      url : '/allergy_details_add_update'
+    })
+    .done(function(data1){
+      //var data1 = JSON.parse(data1);
+      Toast.fire({
+            icon: 'success',
+            title: " Successfully Done !"
+      });
+    })
+    e.preventDefault();
+  });
+
+
+</script>
+
+</body>
+</html>

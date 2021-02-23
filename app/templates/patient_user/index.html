@@ -1,0 +1,231 @@
+
+{% extends "patient_user/user_layout.html" %}
+{% block body %}
+    <!-- Main content -->
+<style>
+  .text-gray {
+    color: #c6c6c6 !important;
+}
+</style>
+    <div class="content">
+      <div class="container">
+
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0"></h1>
+              </div><!-- /.col -->
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+              </div><!-- /.col -->
+            </div><!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </div>
+        <div class="row">
+          <!--{% set color = categories[0].color %}-->
+          {% for category in categories %}
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              {% if category.id|int == category_id|int %}
+                <div class="ribbon-wrapper">
+                  <div class="ribbon" style="background-color:{{category.color}};color:white;"></div>
+                </div>
+              {% endif %}
+             <span class="d-flex align-items-center">
+               <span style="padding:8px;background-color: {{category.color}};width: 40px;height: max-content;text-align: center;border-radius: 4px;color: white;">
+                 <a href="/user_index_{{panel_id}}_{{category.id}}" style="color:white;">
+                   <i class="fas {{category.icon_img}}"></i>
+                 </a>
+               </span>
+             </span>
+              <div class="info-box-content">
+                <span style="padding-right:5px;">
+                  <a href="/user_index_{{panel_id}}_{{category.id}}" style="color:{{category.color}};">
+                    {{category.name}}
+                  </a>
+                </span>
+                <span class="info-box-number">
+                  <a href="/user_index_{{panel_id}}_{{category.id}}" style="color:black;">
+                  {{category.tarits|length}}
+                  <small>Traits</small>
+                  </a>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+             <!-- /.info-box -->
+          </div>
+
+          {% endfor %}
+          <!-- /.col -->
+        </div>
+
+
+        <div  class=" card card-outline" style="border-top: 3px solid {{categories[category_id|int-1].color}};">
+          <div class="card-header d-flex p-0">
+                <h3 class="card-title p-3">
+                  <i class="nav-icon fas {{categories[category_id|int-1].icon_img}}" style="color:{{categories[category_id|int-1].color}};"></i> &nbsp;
+                  {{categories[category_id|int-1].name}} Trait Details
+                </h3>
+
+            <ul class="nav nav-pills ml-auto p-2">
+              <li class="nav-item" ><a style="padding: .2rem 1rem;" class="nav-link active" href="#tab_1" data-toggle="tab">Genetic Risk Analysis</a></li>
+              {% set counter =[] %}
+              {% for trait in traits %}
+                {% if blood_data[trait.id] is defined %}
+                  {% set var = counter.append(blood_data[trait.id]) %}
+                {% endif %}
+              {% endfor %}
+              {% if counter|length > 0 %}
+                <li class="nav-item" ><a style="padding: .2rem 1rem;" class="nav-link " href="#tab_2" data-toggle="tab">Actual Blood Analysis</a></li>
+              {% endif %}
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1">
+                <div class="row">
+                  {% for trait in traits %}
+                    <div class="col-md-3">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="card card-widget widget-user shadow-none">
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header" style="height: 30px;">
+
+                      </div>
+                      <div class="widget-user-image" style="top: 2px;margin-left: -35px;">
+                        <img class="img-circle  elevation-2" style="width: 70px;height: 70px;" src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" alt="{{trait.name}}">
+                      </div>
+
+                      <div class="card-footer elevation-1" >
+                        <a href="/user_trait_view_{{trait.category_id}}_{{trait.id}}" style="color:black;">
+                        <center>
+                          <h6 class="widget-user-desc">{{trait.name}}</h6>
+                          {% set count = [] %}
+                          {% for algo in algorithm_info[loop.index-1] %}
+                            {% set var = count.append(algo.score|int) %}
+                          {% endfor %}
+                          {% set score = (100/10)*count|sum %}
+
+                          {% if score == 0 %}
+                          <p class="text-success">{{score}}</p>
+                          <div>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-success">Typical</p>
+                          {% elif score <= 50 %}
+                          <p class="text-primary">{{score}}</p>
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-primary">Slightly Enhanced</p>
+                          {% elif score > 50 %}
+                          <p class="text-purple">{{score}}</p>
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                          </div>
+                          <p class="text-purple">Enhanced</p>
+                          {% endif %}
+                        </center>
+                        </a>
+                      </div>
+                    </div>
+                    <!-- /.widget-user -->
+                  </div>
+                  {% endfor %}
+                </div>
+                <!-- /.tab-pane -->
+              </div>
+                <!-- /.tab-content -->
+              <!-- /.tab-pane -->
+                  <div class="tab-pane " id="tab_2">
+
+                    <div class="row">
+                  {% for trait in traits %}
+                      {% if blood_data[trait.id] is defined %}
+
+                    <div class="col-md-3">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="card card-widget widget-user shadow-none">
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header" style="height: 30px;">
+
+                      </div>
+                      <div class="widget-user-image" style="top: 2px;margin-left: -35px;">
+                        <img class="img-circle  elevation-2" style="width: 70px;height: 70px;" src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" alt="{{trait.name}}">
+                      </div>
+
+                      <div class="card-footer elevation-1" >
+                        <center>
+                          <h6 class="widget-user-desc">{{trait.name}}</h6>
+
+                          {% if ((blood_data[trait.id][0] >= blood_data[trait.id][1][0]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][1])) %}
+                          <div>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-success">Typical</p>
+                          {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][2]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][3])) %}
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-primary">Slightly Enhanced</p>
+                          {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][4]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][5])) %}
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                          </div>
+                          <p class="text-purple">Enhanced</p>
+                          {% endif %}
+                        </center>
+                      </div>
+                    </div>
+                    <!-- /.widget-user -->
+                  </div>
+                      {% endif %}
+                  {% endfor %}
+                </div>
+
+                  </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+
+{% endblock %}

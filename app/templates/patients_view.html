@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">View Patients</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">View Patients</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+         <div class="col-md-12">
+            <!-- Form Element sizes -->
+            <div class="card card-success card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                  View Patients
+                </h3>
+              </div>
+              <div class="card-body">
+                {% include "flash_alert.html" ignore missing %}
+
+<!-- 
+        <!-- SELECT2 EXAMPLE --
+        <div class="card card-default  collapsed-card">
+          <div class="card-header">
+            <h3 class="card-title">Filters</h3>
+
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.card-header --
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <!-- Date range --
+                <div class="form-group">
+                  <label>Date range:</label>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control float-right" id="from_to_date_input">
+                  </div>
+                  <!-- /.input group --
+                </div>
+                <!-- /.form group --
+              </div>
+              <!-- /.col --
+              <div class="col-md-6">
+                <!-- /.form-group --
+              </div>
+              <!-- /.col --
+            </div>
+            <!-- /.row --
+          </div>
+        </div>
+        <!-- /.card --> 
+                <div class="table-responsive">
+                  <table id="dataTable1" class="table table-bordered table-sm">
+                    <thead>
+                    <tr>
+                      <th>Patient Id</th>
+                      <th>Patient Name</th>
+                      <!-- <th>Email ID</th> -->
+                      <th>Test Name</th>
+                      <th>Date Submitted</th>
+                      <th>Result Status</th>
+                      <th>View</th>
+                      <th>Technician Status</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for patient_panel in patients_panels_refid %}
+                    {% set count = loop.index %}
+                     <tr>
+                        <td>{{patient_panel[0].patient_id}}</td>
+                        <td><a href="" data-toggle="modal" data-target="#viewPatientDetailsModal" data-id={{patient_panel[0].id}} onclick="PatientViewModal(this)" >{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</a></td>
+                        <!-- <td>{{patient_panel[0].email}}</td> -->
+                        <td>{{patient_panel[1].name}} </td>
+                        <td>{% if patient_panel[2].submitted_date != None %}{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}}{% endif %}</td>
+                        <td>{{patient_panel[2].result_status}}</td>
+                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="download_analysis_data/{{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
+                        <td>
+                        
+                          {% if patient_panel[2].result_status == "Done" %}
+                            <form action="" method="post">
+                              <div class="row">
+                                <div class="col-sm-8">
+                                <input type="hidden" id="pantient_panel_id{{count}}" value="{{patient_panel[2].id}}">
+                                <input type="hidden" id="patient_id{{count}}" value="{{patient_panel[0].id}}">
+                                <input type="hidden" id="panel_id{{count}}" value="{{patient_panel[1].id}}">
+                                <select class="form-control" onchange ="PatientTechnicianStatus({{count}})" id="technician_status{{count}}">
+                                  <option value=""> -- Select Status --</option>
+                                  <option value="Approved" {% if patient_panel[2].technician_status == 'Approved' %} selected {% endif %}>Approved</option>
+                                  <option value="Rejected" {% if patient_panel[2].technician_status == 'Rejected' %} selected {% endif %}>Rejected</option>
+                                </select>                              
+                              </div>
+                              <div class="col-sm-4">
+                                {% if patient_panel[2].technician_status != '' and patient_panel[2].technician_status != None %}
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm" data-toggle="dropdown">
+                                      <i class="fa fa-fw fa-calendar-check"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                      <a class="dropdown-item" href="#">{{patient_panel[2].technician_status_date.strftime("%m/%d/%Y")}}</a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <small class="text-success" id="status_update_msg{{count}}"></small>
+                              </div>
+                            </div>
+                          </form>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if patient_panel[2].result_status == "Done" %}
+                          <a href="" data-toggle="modal" data-target="#viewPatientPhysicianDetailsModal" data-id={{patient_panel[2].id}}  data-patient_id={{patient_panel[0].id}}  data-panel_id={{patient_panel[1].id}} onclick="PatientPhysicianDetails(this)"><i class="fa fa-user-md"></i></a>
+                          <a href="" data-toggle="modal" data-target="#viewPatientEmailModal" data-id={{patient_panel[0].id}} data-panel_id={{patient_panel[1].id}} data-patient_panel_id={{patient_panel[2].id}}  onclick="PatientEmailModal(this)" > <i class="fas fa-paper-plane" title="{% if patient_panel[2].send_date != None %}Last sent on {{patient_panel[2].send_date.strftime('%m/%d/%Y') }}{% else %} Not yet send {% endif %}"></i></a>
+                          <!--<a href=""   > <i class="fas fa-print" title="{% if patient_panel[2].print_and_issue_date != None %}Last printed on {{patient_panel[2].print_and_issue_date.strftime('%m/%d/%Y') }}{% else %} Not yet printed {% endif %}"></i></a>-->
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>              
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    <div class="modal fade" id="viewPatientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Personal Details</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <b>Gender : </b> <span id="modalPatientGender"></span><br/>
+
+              <b>Email Id : </b> <span id="modalPatientEmailId"></span><br/>
+
+              <b>Contact No : </b> <span id="modalPatientContactNo"></span><br/>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="viewPatientEmailModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientEmailModalLabel" aria-hidden="true">
+      <form action="/sendEmail" method="post"  enctype='multipart/form-data'>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Message To <span id = "patientNameModal"></span></h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="patient_id" name="patient_id">
+                <input type="hidden" id="panel_id" name="panel_id">
+                <div class="form-group">
+                  <input type="email" class="form-control" placeholder="To:" id ="toEmailModal" name="to">
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Subject:" name="subject">
+                </div>
+                <div class="form-group">
+                   <textarea id="editor1" placeholder="Enter Some Message" name="message"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputFile">File input</label>
+                    <div class="input-group">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="attachment" name="attachment" multiple required>
+                        <label class="custom-file-label" for="attachment"><i class="fa fa-paperclip" id="attachment_txt"></i> </label>
+                      </div>
+                      <div class="input-group-append">
+                        <button onclick="document.getElementById('attachment_txt').innerHTML = '';document.getElementById('attachment').val = ''" class="input-group-text" type="button">Reset</button>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" disable class="btn btn-primary">Send</button>
+            </div>
+        </div>
+      </div>
+      </form>
+    </div>
+
+    <div class="modal fade" id="viewPatientPhysicianDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Physician Updates</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <b>Physician Status : </b> <span id="modalPhysicianStatus"></span><br/>
+              <b>Date : </b> <span id="modalPhysicianStatusDate"></span><br/>
+              <b>Physician Note : </b> <span id="modalPhysicianNote"></span><br/>
+              <b>New Report : </b> <span id="modalPhysicianReport"></span><br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

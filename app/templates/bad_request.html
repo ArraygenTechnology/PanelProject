@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bad Request</title>
+
+   <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+   <style type="text/css">
+    
+/* arrows */
+
+body, .login-page{
+  background-image: url("{{ url_for('static', filename=img[1]) }}");
+  background-position: center;
+  background-size: cover;
+}
+
+
+/* On screens that are 600px wide or less, the background color is olive */
+@media screen and (min-width: 600px) {  
+  body, .login-page{
+    background-image: url("{{ url_for('static', filename=img[0]) }}");
+    background-position: center;
+    background-size: cover;
+  }
+
+  .navbar-light {
+    position: absolute;width: 100%;background-color: #ffe4c400;
+  }
+  .login-page .card{
+      width: 400px;
+  }
+}
+  </style>
+
+</head>
+
+<body class="hold-transition">
+<nav class="navbar navbar-expand-md navbar-light" style="">
+    <a href="#" class="navbar-brand"><img style="max-height: 90px " src ="{{ url_for('static', filename='dist/img/Logo.png') }}" class="img-fluid"></a>
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav">
+            
+            
+        </div>
+        <div class="navbar-nav ml-auto">
+            <a href="/Admin" class="nav-item nav-link active">Admin</a>
+            <a href="/Physician" class="nav-item nav-link">Physician</a>
+            <a href="/Technician" class="nav-item nav-link">Technician</a>
+            <a href="/User" class="nav-item nav-link">User</a>
+        </div>
+    </div>
+</nav>
+
+<div class="login-box login-page" style="width: 100%">
+  <!-- /.login-logo -->
+  
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script>
+</body>
+</html>

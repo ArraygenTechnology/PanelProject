@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+         
+         <img src="{{ url_for('static',filename=img[0]) }}" class="img-fluid">
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock %}

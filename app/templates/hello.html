@@ -1,0 +1,451 @@
+<!doctype html>
+<html>
+<head>
+  <title>Hello</title>
+  <style>
+    .header {
+        display: block;
+        text-align: left;
+        font-size:30px;
+        color:white;
+        height:100px;
+        background-color:#28a745;
+        position: running(header);
+    }
+    .header-name{
+        padding:30px;
+        width:810px;
+        position:absolute;
+    }
+    .header-img-span{
+        width:120px;
+        float:right;
+        height:100%;
+        position:relative;
+        padding-right:10px
+    }
+    .header-img{
+        background-color:white;
+        width:100px;
+        border-top-left-radius:10px;
+        border-top-right-radius: 10px;
+        position:absolute;bottom:-1px;
+        padding:10px;
+    }
+    .footer{
+        width:100%;
+        height:30px;
+        background-color:#ffe75e;
+    }
+    .content{
+        padding:20px;
+        height:1220px;
+    }
+    .page{
+        min-height:1403px;
+        position:relative;
+     }
+     .page1{
+        min-height:1399px;
+        position:relative;
+     }
+    .col-sm-6{
+        display:inline-block;
+        width:50%;
+    }
+
+    .column {
+      float: left;
+      width: 50%;
+      padding: 2px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .row {
+      margin-left:0px;
+    }
+
+    .column {
+      float: left;
+      width: 47%;
+      padding:10px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+      margin:15px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 4px;
+      font-size:14px;
+      border: 1px solid #ddd;
+    }
+    th{
+        background-color: #a8a8a8;
+        color:white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .success{
+        background-color: #3ebd10;
+        color:white;
+        text-align:center;
+    }
+
+    .warning{
+        background-color: #fbc035;
+        color:white;
+        text-align:center;
+    }
+
+    .primary{
+        background-color: #007bff;
+        color:white;
+        text-align:center;
+    }
+
+    .purple{
+        background-color: #6f42c1;
+        color:white;
+        text-align:center;
+    }
+
+    p{
+        text-align: justify;
+        text-justify: inter-word;
+    }
+    .text-gray {
+        color: #c6c6c6 !important;
+    }
+    .text-primary {
+        color: #007bff !important;
+    }
+    .text-success {
+        color: #28a745 !important;
+    }
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Cover Page
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content"></div>
+        <div class="footer"> </div>
+    </div>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                {{user.f_name}} {{user.l_name}} , <small style="color:#ffe75e;">{{user.dob}}</small>
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+            <h1 style="text-align:center;">
+                About the report
+            </h1>
+        </div>
+        <div class="footer"> </div>
+    </div>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Summary of Genetic test results
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="column">
+                  {% set count = [] %}
+                  {% for category in categories[:5] %}
+                    <table>
+                      <tr>
+                        <th colspan="2"> {{category.name}}</th>
+                      </tr>
+                        {% for traits in all_traits[loop.index-1] %}
+
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                      <tr>
+                        <td style="width:87%"><!--{{count|length}} --> {{score}} {{traits.name}}</td>
+                        <td class="{% if score == 0 %} success {% elif score <= 50 %} primary {% elif score >= 50 %} purple {% endif %}">
+                            <i class="fa fa-check"></i>
+                        </td>
+                      </tr>
+                        {% set var = count.append(1) %}
+                        {% endfor %}
+                    </table>
+                  {% endfor %}
+              </div>
+              <div class="column">
+                  {% for category in categories[5:] %}
+                    <table>
+                      <tr>
+                        <th colspan="2">{{category.name}}</th>
+                      </tr>
+                        {% for traits in all_traits[5+loop.index-1] %}
+
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                      <tr>
+                        <td style="width:87%"><!--{{count|length}} --> {{score}} {{traits.name}}</td>
+                        <td class="{% if score == 0 %} success {% elif score <= 50 %} primary {% elif score >= 50 %} purple {% endif %}">
+                            <i class="fa fa-warning"></i>
+                        </td>
+                      </tr>
+                        {% set var = count.append(1) %}
+                        {% endfor %}
+                    </table>
+                  {% endfor %}
+              </div>
+            </div>
+        </div>
+        <div class="footer"> </div>
+    </div>
+     {% set count = [] %}
+     {% for category in categories %}
+        {% set i = loop.index %}
+        {% for trait in all_traits[loop.index-1] %}
+        <div class="page">
+            <div class='header'>
+                <span class="header-name">
+                    {{trait.name}} <small style="color:#ffe75e;"> {{category.name}} </small>
+                </span>
+                <span class="header-img-span">
+                    <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+                </span>
+            </div>
+            <div class="content">
+                <h2>About</h2>
+                <center>
+                    <img style="width:100px;height:100px;padding:3px;border: 2px solid {{category.color}};border-radius:50%;" src="{{os_path}}/app/static/uploads/{{trait.icon_img}}" />
+                </center>
+                <p style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{trait.about}}</p>
+                <div>
+                    <div class="column">
+                        <h2>Genetic risk analysis</h2>
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                        {% if score == 0 %}
+                        <b class="text-success">{{score}}</b>
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-success"></i>
+                            <i class="fa fa-circle text-success"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-success">Typical</b>
+                        {% elif score <= 50 %}
+                        <b class="text-primary">{{score}}</b>
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-primary"></i>
+                            <i class="fa fa-circle text-primary"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-primary">Slightly Enhanced</b>
+                        {% elif score >= 50 %}
+                        <b class="text-purple">{{score}}</b>
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-purple"></i>
+                            <i class="fa fa-circle text-purple"></i>
+                        </div>
+                        <b class="text-purple">Enhanced</b>
+
+                        {% endif %}
+                    </div>
+                    <div class="column">
+                        <h2>Actual blood analysis</h2>
+                        {% if loop.index % 3 == 0 %}
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-success"></i>
+                            <i class="fa fa-circle text-success"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-success">Typical</b>
+                        {% elif loop.index % 3 == 1 %}
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-primary"></i>
+                            <i class="fa fa-circle text-primary"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-primary">Slightly Enhanced</b>
+                        {% elif loop.index % 3 == 2 %}
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-purple"></i>
+                            <i class="fa fa-circle text-purple"></i>
+                        </div>
+                        <b class="text-purple">Enhanced</b>
+                        {% endif %}
+                    </div>
+                </div>
+                <div style="margin:20px;">&nbsp;</div>
+                <h4>How do these results connect?</h4>
+                <p>
+                    You have an average genetic risk for lower magnesium, but you don't have any blood test results for magnesium.
+                    Find out how your genetic risk compares to what is actually happening in your body by uploading recent blood test results or by getting a blood test for magnesium done.
+                </p>
+                <div style="margin:20px;">&nbsp;</div>
+                <h2>Dietary Sources / What To Do ?</h2>
+                {% if trait.source_status == "Yes" %}
+                    <p><b>Plant Source</b> : {{trait.source_plant}}</p>
+                    <p><b>Animal Source</b> : {{trait.source_animal}}</p>
+                    <p><b>Other Source</b> : {{trait.source_others}}</p>
+                {% else %}
+                    <p>{{trait.what_to_do}}</p>
+                {% endif %}
+
+                {% set var = count.append(1) %}
+            </div>
+            <div class="footer"> </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Physician / Nutrition Notes
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+
+        </div>
+        <div class="footer"> </div>
+    </div>
+    <div class="">
+        <div class='header'>
+            <span class="header-name">
+                Genetic Data
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div style="padding:10px">
+            <h2>Genetic Data</h2>
+            <p>Your genetic data table shows your genotype for each gene, which is identified by its rsID number. Your genotype is characterized by an allele combination. The effect allele is the allele that has an effect on your genetic risk analysis</p>
+            <p>* Indicates a missing SNP from your DNA data. DNA sampling and analysis is complex and subject to occasional technical errors. Missing some data is not unusual, and it won't affect the accuracy of your genetic analysis.</p>
+
+        {% set count = [] %}
+        {% for category in categories %}
+            {% for trait in all_traits[loop.index-1] %}
+              {% set l = algorithm_info[count|length]|length|int %}
+                 {% if l > 0 %}
+                  <div style="width:47%;display:inline-block;">
+                    <h4 style="padding-left:20px;color:gray;">{{trait.name}}</h4>
+                    <table style="">
+                      <tr>
+                        <th>Rs Id Number</th>
+                        <th>Your Genotype</th>
+                        <th>Alternate Allele</th>
+                      </tr>
+
+                        {% for algo_info in algorithm_info[count|length] %}
+                          <tr>
+                            <td>{{algo_info.rs_id}}</td>
+                            <td>{{algo_info.genotype}}</td>
+                            <td>{{algo_info.score}} {{algo_info.allele}}</td>
+                          </tr>
+                        {% endfor %}
+                    </table>
+                  </div>
+              {% endif %}
+              {% set var = count.append(1) %}
+            {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+    <div style="page-break-after:always;"></div>
+    <div class="" >
+        <div class='header'>
+            <span class="header-name">
+                Disclaimer
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+        </div>
+        <div class="footer"> </div>
+    </div>
+</body>
+</html>

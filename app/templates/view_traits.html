@@ -1,0 +1,328 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Content Header (Page header) -->
+<div class="content-header" xmlns="http://www.w3.org/1999/html">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">View Traits</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">View Traits</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+         <div class="col-md-12">
+            <!-- Form Element sizes -->
+            <div class="card card-success card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                  View User
+                </h3>
+              </div>
+              <div class="card-body">
+                {% include "flash_alert.html" ignore missing %}
+                <div>
+                  <table id="dataTable1" class="table table-bordered">
+                    <thead>
+                    <tr>
+
+                      <th>Trait Name</th>
+                      <th>Image</th>
+                      <th>Category</th>
+                      <th>Description</th>
+                      <th>More</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for trait, category in traits %}
+                    <tr>
+                      <td>
+                          {{ trait.name }}
+
+                      </td>
+                      <td>
+                        <img src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" class="img-fluid" width="100" />
+                      </td>
+                      <td>
+                            {{ category.name }}
+                      </td>
+                      <td>
+                        <a href="#" data-toggle="modal" data-target="#traitDetails" data-id="{{ trait.id }}" onclick="traitModal(this)" title="View Trait Description"> view </a>             
+                      </td>
+                      
+                      <td>
+                        <a  href="#" data-toggle="modal" data-target="#bloodDetails" data-trait-id="{{ trait.id }}" onclick="bloodDetailsModal(this)" title="Add/Edit Trait Algorithm Details">
+                          <i class="fas fa-hand-holding-water"></i>
+                        </a>&nbsp;
+                        <a  href="#" data-toggle="modal" data-target="#allergyDetails" data-trait-id="{{ trait.id }}" onclick="allergyDetailsModal(this)" title="Add/Edit Trait Algorithm Details">
+                          <i class="fas fa-allergies"></i>
+                        </a>&nbsp;
+                        <a  href="#" data-toggle="modal" data-target="#traitGeneDetails" data-trait-id="{{ trait.id }}" onclick="traitGeneModal(this)" title="Add/Edit Trait Algorithm Details">
+                          <i class="fas fa-plus-circle"  aria-hidden="true"></i>
+                        </a>&nbsp;
+                        <a href="/panel_category_trait_{{ category.panel_id }}_{{ category.id }}_{{ trait.id }}">
+                          <i class="fas fa-edit"  aria-hidden="true"></i>
+                        </a> &nbsp;
+                        <a href="/trait_delete/{{ category.panel_id }}-{{ trait.id }}" class="text-danger"  onclick="return confirm('Are you sure you want to delete this?');">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                      <th>Trait Name</th>
+                      <th>Image</th>
+                      <th>Category</th>
+                      <th>Details</th>
+                      <th>More</th>
+                    </tr>
+                    </tfoot>
+                  </table>
+
+                </div>              
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    <!-- The Modal -->
+    <div class="modal fade" id="bloodDetails" tabindex="-1" role="dialog" aria-labelledby="bloodDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="bloodDetailsModalLabel">Blood Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form method="post" id="bloodDetailsForm">
+                <input type="hidden" name="csrf_token" id="blood_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" id="trait_id_blood" name="trait_id_blood">
+                  <input type="hidden" id="blood_id" name="blood_id" value="0">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Min:</label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" placeholder="" name="min" id ="blood_min" value="">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Max:</label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" placeholder="" name="max" id= "blood_max" value="" >
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Extended Range:</label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" placeholder="" name="max" id= "blood_extended_range" value="" >
+                    </div>
+                  </div>
+                   <div class="col-sm-12">
+
+                        <table class="table table-bordered">
+                          <tr>
+                            <th>Decreased</th>
+                            <th>Typcial</th>
+                            <th>Slightly Enhanced</th>
+                            <th>Enhanced</th>
+                          </tr>
+                          <tr>
+                            <td>Less than range</td>
+                            <td>Between</td>
+                            <td>Between max and max + extended</td>
+                            <td>Greater than max + extended</td>
+                          </tr>
+                        </table>
+                    </div>
+              </div>
+              <button type="submit" class="btn btn-primary float-right">Submit</button>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="allergyDetails" tabindex="-1" role="dialog" aria-labelledby="allergyDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="allergyDetailsModalLabel">Allergy Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="post" id="allergyDetailsForm">
+            <input type="hidden" name="csrf_token" id="allergy_csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" id="trait_id_allergy" name="trait_id_allergy">
+                 <input type="hidden" id="allergy_id" name="allergy_id">
+              <div class="row">
+                  <div class="col-sm-4">
+                      <br/>
+                      <label>Range:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>min:</label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" placeholder="" name="min" id ="allergy_min" value="">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>max:</label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" placeholder="" name="max" id= "allergy_max" value="">
+                    </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-12">
+
+                        <table class="table table-bordered">
+                          <tr>
+                            <th>No Allergy</th>
+                            <th>Allergy</th>
+                          </tr>
+                          <tr>
+                            <td>Less and with in range</td>
+                            <td>Greater than range</td>
+                          </tr>
+                        </table>
+                    </div>
+              </div>
+              <button type="submit" class="btn btn-primary float-right">Submit</button>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="traitDetails" tabindex="-1" role="dialog" aria-labelledby="traitDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="traitDetailsModalLabel">Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <strong>Description : </strong><span id="modalDescription"></span><br/>
+            <strong>Source Plant : </strong><span id="modalDietarySourcePlant"></span><br/>
+            <strong>Source Animal : </strong><span id="modalDietarySourceAnimal"></span><br/>
+            <strong>Source Others : </strong><span id="modalDietarySourceOthers"></span><br/>
+            <strong>What To Do : </strong><span id="modalWhatToDo"></span><br/>
+            <h4> Result Messages : </h4>
+            <strong>Typical : </strong><span id="modalTypicalRes"></span><br/>
+            <strong>Slightly Enhanced : </strong><span id="modalSlightlyEnhancedRes"></span><br/>
+            <strong>Enhanced : </strong><span id="modalEnhancedRes"></span><br/>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <div class="modal fade" id="traitGeneDetails" tabindex="-1" role="dialog" aria-labelledby="traitGeneDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+         
+            <div class="modal-header">
+              <h5 class="modal-title" id="traitGeneDetailsModalLabel">Trait Algorithm Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="post" id="traitGeneDetailsForm">
+                <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" id="trait_id" name="trait_id" >
+                <input type="hidden" name="gene_id" id ="gene_id" value="0">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label>Gene:</label>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="" name="gene" id="gene" value="" required="">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>RSID:</label>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="" name="rs_id" id ="rs_id" value="" required="">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>Genotype:</label>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="" name="genotype" id= "genotype" value="" required="">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>Score:</label>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="" name="score" id = "score" value="" required="">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>Allele:</label>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="" name="allele" id ="allele" value="">
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <br>
+                    <div class="form-group" style="padding-top: 6px;">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+                
+              </form>
+              <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                      <th>Gene</th>
+                      <th>RSID</th>
+                      <th>Genotype</th>
+                      <th>Score</th>
+                      <th>Allele</th>
+                      <th>More</th>
+                    </tr>
+                    </thead>
+                    <tbody id="TraitGreneModalTable">
+                    </tbody>
+                  </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>         
+        </div>
+      </div>
+    </div>
+
+    
+{% endblock %}

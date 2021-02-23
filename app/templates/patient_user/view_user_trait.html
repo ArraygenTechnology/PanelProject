@@ -1,0 +1,124 @@
+
+{% extends "patient_user/user_layout.html" %}
+{% block body %}
+    <!-- Main content -->
+  <style>
+    .text-gray {
+      color: #c6c6c6 !important;
+  }
+  </style>
+    <div class="content">
+      <div class="container">
+
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0"></h1>
+              </div><!-- /.col -->
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="/user_index_{{category.panel_id}}_{{category.id}}">{{category.name}}</a></li>
+                  <li class="breadcrumb-item active">{{trait.name}}</li>
+                </ol>
+              </div><!-- /.col -->
+            </div><!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </div>
+
+        <div  class=" card card-outline" style="border-top: 3px solid {{category.color}};">
+          <div class="card-header">
+            <h3 class="card-title">
+              <b><i class="nav-icon fas {{category.icon_img}}" style="color:{{category.color}};"></i> &nbsp;
+               {{trait.name}} <small>({{category.name}})</small></b>
+            </h3>
+          </div>
+          <div class="card-body">
+
+            <div class="m-3">
+
+              <div class="row">
+              <h5><b>About</b></h5>
+              <div class="col-sm-12">
+                <center>
+                  <img class="img-circle " style="width: 100px;height: 100px; border : 2px solid {{category.color}};" src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" alt="{{trait.name}}">
+                </center>
+              </div>
+              <p>&nbsp;</p>
+              <p style="text-align: justify;text-justify: inter-word;">
+                {{trait.about|safe}}
+              </p>
+              <div class="col-sm-6">
+                <h5><b>Genetic Risk Analysis</b></h5>
+
+                          {% set count = [] %}
+                          {% for algo in algorithm_info %}
+                            {% set var = count.append(algo.score|int) %}
+                          {% endfor %}
+                          {% set score = (100/10)*count|sum %}
+
+                          {% if score == 0 %}
+                          <div class="text-success">{{score}}</div>
+                          <div>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-success"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-success">Typical</p>
+                          {% elif score <= 50 %}
+                          <p class="text-primary">{{score}}</p>
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-primary"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-primary">Slightly Enhanced</p>
+                          {% elif score > 50 %}
+                          <p class="text-purple">{{score}}</p>
+                          <div>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-gray"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                            <i class="fas fa-circle text-purple"></i>
+                          </div>
+                          <p class="text-purple">Enhanced</p>
+                          {% endif %}
+              </div>
+              <div class="col-sm-6">
+                <h5><b>Actual Blood Analysis</b></h5>
+              </div>
+              <div class="col-sm-12">
+                <h5><b>How do these results connect?</b></h5>
+                <p>
+                    You have an average genetic risk for lower magnesium, but you don't have any blood test results for magnesium.
+                    Find out how your genetic risk compares to what is actually happening in your body by uploading recent blood test results or by getting a blood test for magnesium done.
+                </p>
+                <h5><b>Dietary Sources / What To Do ?</b></h5>
+                {% if trait.source_status == "Yes" %}
+                    <p><b>Plant Source</b> : {{trait.source_plant|safe}}</p>
+                    <p><b>Animal Source</b> : {{trait.source_animal|safe}}</p>
+                    <p><b>Other Source</b> : {{trait.source_others|safe}}</p>
+                {% else %}
+                    <p>{{trait.what_to_do|safe}}</p>
+                {% endif %}
+            </div>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+
+{% endblock %}

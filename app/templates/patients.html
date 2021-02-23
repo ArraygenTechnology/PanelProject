@@ -1,0 +1,551 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{% if patient is defined %}Edit{% else %}Add{% endif %} Patient</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">{% if patient is defined %}Edit{% else %}Add{% endif %} Patient</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+         <form method="post" action="{% if patient is defined %}{{ url_for('patients_add_update', id = patient.id) }}{% else %}{{ url_for('patients_add_update') }}{% endif %} ">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="row">
+           <div class="col-md-12">
+                  {% include "flash_alert.html" ignore missing %}
+           </div>
+            <div class="col-md-6">
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline ">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-user"></i>
+                   Personal Details
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless">
+                      <tr>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Date: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <div class="input-group date" id="date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input current_date" data-target="#date" name="date"  value="{% if patient is defined %}{{ patient.date.strftime('%m/%d/%Y') }}{% endif %}" required readonly />
+                                    <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control current_date"> -->
+                                </div>
+                              </div>
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Name: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="First Name" name="f_name"  value="{% if patient is defined %}{{ patient.f_name }}{% endif %}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Last Name" name ="l_name"  value="{% if patient is defined %}{{ patient.l_name }}{% endif %}" required>
+                              </div>
+                            </div>
+                          </div>                 
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Patient ID: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Patient ID" name="patient_id"  value="{% if patient is defined %}{{ patient.patient_id }}{% elif patient_id is defined %}{{patient_id}}{% endif %}" required readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {% set gender="" %}
+                      {% if patient is defined %}
+                      {% set gender = patient.gender %}
+                      {% endif %} 
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Gender: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <select class="form-control" name="gender" required>
+                                  <option value="">-- Select Gender --</option>
+                                  <option value="Male" {% if gender == 'Male' %}selected{% endif %} >Male</option>
+                                  <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                                  <option value="Other" {% if gender == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                       <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Ethnicity: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Ethnicity" name="ethnicity"  value="{% if patient is defined %}{{ patient.ethnicity }}{% endif %}" required >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                       <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Date of Birth: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <div class="input-group date" id="dob" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input dob" data-target="#dob" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control " > -->
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Contact No: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Contact Number" name="contact_no"  value="{% if patient is defined %}{{ patient.contact_no }}{% endif %}" required >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                       <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Email ID: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Enter Email ID"  value=" {% if patient is defined %}{{ patient.email }}{% endif %} " name="email" required>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Password: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="password" id ="password" class="form-control" placeholder="Enter Password" value="{% if patient is defined %}{{ patient.password }}{% endif %}"  name="password" required>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Confirm Password: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="password" id ="confirm_password" class="form-control" placeholder="Enter Confirm Password" value="{% if patient is defined %}{{ patient.password }}{% endif %}" required>
+                                <span id="password-error" class="error invalid-feedback"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right "><span class="text-danger">*</span> Address: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <textarea class="form-control" rows="3" placeholder="Enter Address" name="address">{% if patient is defined %}{{ patient.address }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-flask"></i>
+                   Laboratory Details
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                 
+                    <table class="table table-sm table-borderless">
+                      <tr>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Order By: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Order By" name="order_by"  value="{% if patient is defined %}{{ patient.order_by }}{% endif %}" required >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Collection Date: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <div class="input-group date" id="c_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#c_date" name="collection_date"  value="{% if patient is defined %}{{ patient.collection_date }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#c_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control " > -->
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Received Date: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <div class="input-group date" id="r_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#r_date" name="received_date"  value="{% if patient is defined %}{{ patient.received_date }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#r_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                 <!--  <input type="date" class="form-control" > -->
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Report Generated: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Report Generated" name="report_generated"  value="{% if patient is defined %}{{ patient.report_generated }}{% endif %}" required >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                </div>
+                <!--  /.Card Body -->  
+              </div>
+             <!--  /.Card -->         
+            </div>
+            <!-- sm-* end -->
+            <div class="col-md-6">
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-info-circle"></i>
+                   Additional Details
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless">
+                      <tr>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Age: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control age" placeholder="" name="age"  value="{% if patient is defined %}{{ patient.age }}{% endif %}" required readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Weight: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control weight" placeholder="Enter Weight in Pounds" name="weight"  value="{% if patient is defined %}{{ patient.weight }}{% endif %}" required>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> Height: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                                <input type="text" class="form-control height1" placeholder="Enter Height in Feet"  value="{% if patient is defined %}{{ (patient.height/12)|int }}{% endif %}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              Feet
+                            </div>
+                             <div class="col-sm-3">
+                              <div class="form-group">
+                                <input type="text" class="form-control height2" placeholder="Enter Height in Inches"   value="{% if patient is defined %}{{ patient.height%12 }}{% endif %}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              Inches
+                            </div>
+                            <input type="hidden" class="form-control height" placeholder="Enter Height in Inches" name="height"  value="{% if patient is defined %}{{ patient.height }}{% endif %}" required>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right"><span class="text-danger">*</span> BMI: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control bmi" placeholder="" name="bmi"  value="{% if patient is defined %}{{ patient.bmi }}{% endif %}" required readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right">Allergic to: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="" name="allergic_to"  value="{% if patient is defined %}{{ patient.allergic_to }}{% endif %}" >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right">Additional 1: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="" name="additional1"  value="{% if patient is defined %}{{ patient.additional1 }}{% endif %}" >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                       <tr>
+                        <th class="text-right">Additional 2: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="" name="additional2"  value="{% if patient is defined %}{{ patient.additional2 }}{% endif %}" >
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                       <tr>
+                        <th class="text-right">Additional 3: </th>
+                        <td>
+                           <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control" placeholder="" name="additional3"  value="{% if patient is defined %}{{ patient.additional3 }}{% endif %}">
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-right ">Remarks: </th>
+                        <td>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group">
+                                <textarea class="form-control" rows="3" placeholder="Enter Remarks" name="remark">{% if patient is defined %}{{ patient.remark }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+              {% set panel_checked = [] %}
+              {% if patient is defined %}
+              {% set panel_checked = patient.panels %}
+              {% endif %} 
+              <!--  -->
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-vial"></i>
+                   Test Request 
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <div class="col-sm-12">
+                      <!-- checkbox -->
+                      <div class="form-group">
+                        {% for panel in panels %}
+                        
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name = "panel" {% if panel in panel_checked %}checked{% endif %} value="{{panel.id}}">
+                          <label class="form-check-label">{{panel.name}} Report</label>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <span class="text-danger" id ="panel_error"></span>
+                    </div>                      
+                </div>
+                <!--  /.Card Body -->  
+              </div>
+             <!--  /.Card -->         
+            </div>
+            <!-- sm-* end -->
+
+
+            <div class="col-sm-12">              
+              <!-- Form Element sizes -->
+              <div class="card">               
+                <div class="card-body">                   
+                    <div class="col-sm-12">
+                        <button type="submit" id="submit_patient" class="btn btn-primary">Submit</button>
+                    </div>
+                      
+                </div>
+                <!--  /.Card Body -->  
+              </div>
+             <!--  /.Card --> 
+            </div>
+        </div>
+        <!-- /.row -->
+        </form>
+<div class="row">
+         <div class="col-md-12">
+            <!-- Form Element sizes -->
+            <div class="card card-success card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                  View Patients
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table id="dataTable1" class="table table-bordered">
+                    <thead>
+                    <tr>
+                      <th>Patient Id</th>
+                      <th>Patient Name</th>
+                      <th>Test Name</th>
+                      <th>Registered Date</th>
+                      <th>Contact No</th>
+                      <th>Email ID</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                     {% for patient in patients %}
+                    <tr>
+                      <td>{{ patient.patient_id }}</td>
+                      <td>{{ patient.f_name }} {{ patient.l_name }}</td>
+                      <td>{% for panel in patient.panels %}{{panel.name}} {% endfor %}</td>
+                      <td>{% if patient.date != None %}{{patient.date.strftime('%m/%d/%Y')}}{% endif %}</td>
+                      <td>{{ patient.contact_no }}</td>
+                      <td>{{ patient.email }}</td>
+                      <td>
+                        <a href="/patient/{{ patient.id }}"> <!--  -->
+                          <i class="fas fa-edit"  aria-hidden="true"></i>
+                        </a> 
+                        <!--  -->
+                        <a href="/patient_delete/{{ patient.id }}" class="text-danger" onclick="return confirm('Are you sure you want to delete this?');">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+
+                </div>              
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock %}

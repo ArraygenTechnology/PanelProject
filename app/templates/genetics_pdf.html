@@ -1,0 +1,581 @@
+<!doctype html>
+<html>
+<head>
+  <title>Hello</title>
+  <style>
+    .header {
+        display: block;
+        text-align: left;
+        font-size:30px;
+        color:white;
+        height:100px;
+        background-color:#28a745;
+        position: running(header);
+    }
+    .header-name{
+        padding:30px;
+        width:810px;
+        position:absolute;
+    }
+    .header-img-span{
+        width:120px;
+        float:right;
+        height:100%;
+        position:relative;
+        padding-right:10px
+    }
+    .header-img{
+        background-color:white;
+        width:100px;
+        border-top-left-radius:10px;
+        border-top-right-radius: 10px;
+        position:absolute;bottom:-1px;
+        padding:10px;
+    }
+    .footer{
+        width:100%;
+        height:30px;
+        background-color:#ffe75e;
+    }
+    .content{
+        padding:20px;
+        height:1280px;
+    }
+    .page{
+        min-height:1403px;
+        position:relative;
+        page-break-after: always;
+     }
+     .page1{
+        min-height:1399px;
+        position:relative;
+     }
+    .col-sm-6{
+        display:inline-block;
+        width:50%;
+    }
+
+    .column {
+      float: left;
+      width: 50%;
+      padding: 2px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .row {
+      margin-left:0px;
+    }
+
+    .column {
+      float: left;
+      width: 47%;
+      padding:10px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+      margin:15px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 4px;
+      font-size:14px;
+      border: 1px solid #ddd;
+    }
+    th{
+        background-color: #a8a8a8;
+        color:white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .typical{
+        background-color: #00ab61;
+        color:white;
+        text-align:center;
+    }
+
+    .decreased{
+        color:#007bff;
+        background-color: #ffe270;
+        color:white;
+        text-align:center;
+    }
+
+    .slightly-enhanced{
+        background-color: #ffe353;
+        color:white;
+        text-align:center;
+
+    }
+
+    .enhanced{
+        background-color: #ff7132;
+        color:white;
+        text-align:center;
+    }
+
+    p{
+        text-align: justify;
+        text-justify: inter-word;
+    }
+    .text-gray {
+        color: #c6c6c6 !important;
+    }
+    .text-typical{
+        color:#00ab61;
+    }
+
+    .text-decreased{
+        color:#007bff;
+    }
+
+    .text-slightly-enhanced{
+        color:#ffc107;
+    }
+
+    .text-enhanced{
+        color:#ff7132;
+    }
+
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Cover Page
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content"></div>
+        <div class="footer"> </div>
+    </div>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                {{user.f_name}} {{user.l_name}} , <small style="color:#ffe75e;">{{user.dob}}</small>
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+            <h1 style="text-align:center;">
+                About the report
+            </h1>
+        </div>
+        <div class="footer"> </div>
+    </div>
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Summary of Genetic test results
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="column">
+                  {% set count = [] %}
+                  {% for category in categories[:3] %}
+                    <table>
+                      <tr>
+                        <th colspan="2"> {{category.name}}</th>
+                      </tr>
+                        {% for traits in all_traits[loop.index-1] %}
+
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                      <tr>
+                        <td style="width:87%"><!--{{count|length}} --> {{score}} {{traits.name}}</td>
+                        <td class="{% if score == 0 %} typical {% elif score <= 50 %} slightly-enhanced {% elif score >= 50 %} enhanced {% endif %}">
+                           <center> <i class="fa fa-check-circle"></i></center>
+                        </td>
+                      </tr>
+                        {% set var = count.append(1) %}
+                        {% endfor %}
+                    </table>
+                  {% endfor %}
+              </div>
+              <div class="column">
+                  {% for category in categories[3:] %}
+                    <table>
+                      <tr>
+                        <th colspan="2">{{category.name}}</th>
+                      </tr>
+                        {% for traits in all_traits[3+loop.index-1] %}
+
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                      <tr>
+                        <td style="width:87%"><!--{{count|length}} --> {{score}} {{traits.name}}</td>
+                        <td class="{% if score == 0 %} typical {% elif score <= 50 %} slightly-enhanced {% elif score >= 50 %} enhanced {% endif %}">
+                            <center> <i class="fa fa-check-circle"></i></center>
+                        </td>
+                      </tr>
+                        {% set var = count.append(1) %}
+                        {% endfor %}
+                    </table>
+                  {% endfor %}
+              </div>
+            </div>
+        </div>
+        <div class="footer"> </div>
+    </div>
+     {% set count = [] %}
+     {% for category in categories %}
+        {% set i = loop.index %}
+        {% for trait in all_traits[loop.index-1] %}
+        <div class="page">
+            <div class='header'>
+                <span class="header-name">
+                    {{trait.name}} <small style="color:#ffe75e;"> {{category.name}} </small>
+                </span>
+                <span class="header-img-span">
+                    <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+                </span>
+            </div>
+            <div class="content">
+                <h2>About</h2>
+                <center>
+                    <img style="width:100px;height:100px;border: 2px solid {{category.color}};border-radius:50%;" src="{{os_path}}/app/static/uploads/{{trait.icon_img}}" />
+                </center>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{trait.about|safe}}</p>
+                <div style="width:100%;display:inline-block;">
+                    <div class="column">
+                        <h2>Genetic risk analysis</h2>
+                        {% set blood_res = [] %}
+                        {% set score = [] %}
+                        {% for algo in algorithm_info[count|length] %}
+                            {% set var = score.append(algo.score|float) %}
+                        {% endfor %}
+                        {% set score = (100/10)*score|sum %}
+
+                        {% if score == 0 %}
+                        {% set var = blood_res.append('Typical') %}
+                        <!--<b class="text-typical">{{score}}</b>-->
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-typical"></i>
+                            <i class="fa fa-circle text-typical"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-typical">Typical</b>
+                        {% elif score <= 50 %}
+                         {% set var = blood_res.append('Slightly Enhanced') %}
+                       <!-- <b class="text-slightly-enhanced">{{score}}</b>-->
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-slightly-enhanced"></i>
+                            <i class="fa fa-circle text-slightly-enhanced"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                        </div>
+                        <b class="text-slightly-enhanced">Slightly Enhanced</b>
+                        {% elif score >= 50 %}
+                         {% set var = blood_res.append('Enhanced') %}
+                        <!--<b class="text-enhanced">{{score}}</b>-->
+                        <div style="padding-bottom:10px;">
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-enhanced"></i>
+                            <i class="fa fa-circle text-enhanced"></i>
+                        </div>
+                        <b class="text-enhanced">Enhanced</b>
+
+                        {% endif %}
+                    </div>
+                    <div class="column">
+                        {% set blood_res1 = [] %}
+                        {% set blood_res2 = [] %}
+                        {% if blood_data[trait.id] is defined %}
+                         {% set var = blood_res1.append('Data Present') %}
+                        <h2>Actual blood analysis</h2>
+                            <!--{{blood_data[trait.id]}}-->
+                         {% if (blood_data[trait.id][0] < blood_data[trait.id][1][0]) %}
+                         {% set var = blood_res2.append('Decreased') %}
+                         <div>
+                            <i class="fa fa-circle text-decreased"></i>
+                            <i class="fa fa-circle text-decreased"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                          </div>
+                         <p class="text-decreased">Decreased</p>
+                          {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][0]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][1])) %}
+                         {% set var = blood_res2.append('Typical') %}
+                        <div>
+                            <i class="fa fa-circle text-typical"></i>
+                            <i class="fa fa-circle text-typical"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-typical">Typical</p>
+                          {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][1]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][1]+blood_data[trait.id][1][2]  )) %}
+                         {% set var = blood_res2.append('Slightly Enhanced') %}
+                        <div>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-slightly-enhanced"></i>
+                            <i class="fa fa-circle text-slightly-enhanced"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                          </div>
+                          <p class="text-slightly-enhanced">Slightly Enhanced</p>
+                          {% elif (blood_data[trait.id][0] >= blood_data[trait.id][1][1]+blood_data[trait.id][1][2])  %}
+                         {% set var = blood_res2.append('Enhanced') %}
+                        <div>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-gray"></i>
+                            <i class="fa fa-circle text-enhanced"></i>
+                            <i class="fa fa-circle text-enhanced"></i>
+                          </div>
+                          <p class="text-enhanced">Enhanced</p>
+                          {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <h4>How do these results connect?</h4>
+                <p>
+                    You have an {{blood_res[0]}} genetic potential for {{trait.name}},
+                    {% if blood_res1|length == 0 %}
+                        but you don't have any blood test results for {{trait.name}}.
+                        Find out how your genetic potential compares to what is actually happening in your body by uploading recent blood test results or by getting a blood test for {{trait.name}}.
+                    {% else %}
+                        and your blood test results for {{trait.name}} looks {{blood_res2[0]}}.
+                        Consult the nutritionist to know more about the genetic and blood test results correlation.
+                    {% endif %}
+                    {% if blood_res[0] == "Typical" %}
+                        {{trait.typical_res|safe}}
+                    {% elif blood_res[0] =="Slightly Enhanced"%}
+                        {{trait.slightly_enhanced_res|safe}}
+                    {% elif blood_res[0] =="Enhanced"%}
+                        {{trait.enhanced_res|safe}}
+                    {% endif %}
+
+                </p>
+                <!--<div style="margin:20px;">&nbsp;</div>-->
+                <h2>Dietary Sources / What To Do ?</h2>
+                {% if trait.source_status == "Yes" %}
+                    <p><b>Plant Source</b> : {{trait.source_plant|safe}}</p>
+                    <p><b>Animal Source</b> : {{trait.source_animal|safe}}</p>
+                    <p><b>Other Source</b> : {{trait.source_others|safe}}</p>
+                {% else %}
+                    <p>{{trait.what_to_do|safe}}</p>
+                {% endif %}
+
+                {% set var = count.append(1) %}
+            </div>
+            <div class="footer"> </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+    <!--  Allergy and Blood Result Data   -->
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Blood & Allergy Result
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+        <!--  Blood Result Data Display starts Here -->
+          <div style="width:47%;display:inline-block;">
+            <h4 style="padding-left:20px;color:gray;"> Blood Result</h4>
+              <table style="">
+                 <tr>
+                    <th>Trait Name</th>
+                    <th>Data</th>
+                    <th>Result</th>
+                 </tr>
+                {% for category in categories %}
+                    {% for trait in all_traits[loop.index-1] %}
+                        {% if blood_data[trait.id] is defined %}
+                           <tr>
+                               <td>{{trait.name}}</td>
+                               <td>{{ blood_data[trait.id][0]|int }}</td>
+                               <td>
+                                      {% if (blood_data[trait.id][0] < blood_data[trait.id][1][0]) %}
+                                        <span class="text-decreased">Decreased</span>
+                                      {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][0]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][1])) %}
+                                        <span class="text-typical">Typical</span>
+                                      {% elif ((blood_data[trait.id][0] >= blood_data[trait.id][1][1]) and (blood_data[trait.id][0] <= blood_data[trait.id][1][1]+blood_data[trait.id][1][2]  )) %}
+                                        <span class="text-slightly-enhanced">Slightly Enhanced</span>
+                                      {% elif (blood_data[trait.id][0] >= blood_data[trait.id][1][1]+blood_data[trait.id][1][2])  %}
+                                        <span class="text-enhanced">Enhanced</span>
+                                      {% endif %}
+                               </td>
+                           </tr>
+
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+              </table>
+            </div>
+            <!--  Blood Result Data Display ends Here -->
+            <!--  Allergy Result Data Display Here -->
+          <div style="width:47%;display:inline-block;">
+            <h4 style="padding-left:20px;color:gray;"> Allergy Result </h4>
+              <table style="">
+                 <tr>
+                    <th>Trait Name</th>
+                    <th>Data</th>
+                    <th>Result</th>
+                 </tr>
+                {% for category in categories %}
+                    {% for trait in all_traits[loop.index-1] %}
+                        {% if allergy_data[trait.id] is defined %}
+
+                           <tr>
+                               <td>{{trait.name}}</td>
+                               <td>{{ allergy_data[trait.id][0]|int }}</td>
+                               <td>
+                                {% if (allergy_data[trait.id][0] < allergy_data[trait.id][1][0]) or ((allergy_data[trait.id][0] >= allergy_data[trait.id][1][0]) and (allergy_data[trait.id][0] <= allergy_data[trait.id][1][1])) %}
+                                   <span class="text-typical">No allergy</span>
+                                {% else %}
+                                    <span class="text-enhanced">Allergy</span>
+                                {% endif %}
+                               </td>
+                           </tr>
+
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+              </table>
+            </div>
+            <!--  Allergy Result Data Display ends Here -->
+
+        </div>
+        <div class="footer"> </div>
+    </div>
+
+
+    {% if (patient_panel.include_note == "Yes") and (patient_panel.physician_status == "Approved") %}
+    <div class="page">
+        <div class='header'>
+            <span class="header-name">
+                Physician / Nutrition Notes
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+            {{patient_panel.physician_note|safe}}
+        </div>
+        <div class="footer"> </div>
+    </div>
+    {% endif %}
+    <div class="">
+        <div class='header'>
+            <span class="header-name">
+                Genetic Data
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div style="padding:10px">
+            <h2>Genetic Data</h2>
+            <p>Your genetic data table shows your genotype for each gene, which is identified by its rsID number. Your genotype is characterized by an allele combination. The effect allele is the allele that has an effect on your genetic risk analysis</p>
+            <p>* Indicates a missing SNP from your DNA data. DNA sampling and analysis is complex and subject to occasional technical errors. Missing some data is not unusual, and it won't affect the accuracy of your genetic analysis.</p>
+
+        {% set count = [] %}
+        {% for category in categories %}
+            {% for trait in all_traits[loop.index-1] %}
+              {% set l = algorithm_info[count|length]|length|int %}
+                 {% if l > 0 %}
+                  <div style="width:47%;display:inline-block;">
+                    <h4 style="padding-left:20px;color:gray;">{{trait.name}}</h4>
+                    <table style="">
+                      <tr>
+                        <th>Rs Id Number</th>
+                        <th>Your Genotype</th>
+                        <th>Alternate Allele</th>
+                      </tr>
+                        {% for algo_info in algorithm_info[count|length] %}
+                          <tr>
+                            <td>{{algo_info.rs_id}}</td>
+                            <td>{{algo_info.genotype}}</td>
+                            <td>{{algo_info.score}} {{algo_info.allele}}</td>
+                          </tr>
+                        {% endfor %}
+                    </table>
+                  </div>
+              {% endif %}
+              {% set var = count.append(1) %}
+            {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+    <div style="page-break-after:always;"></div>
+    <div class="" >
+        <div class='header'>
+            <span class="header-name">
+                Disclaimer
+            </span>
+            <span class="header-img-span">
+                <img class="header-img" src="{{os_path}}/app/static/dist/img/Logo.jpg" />
+            </span>
+        </div>
+        <div class="content">
+        </div>
+        <div class="footer"> </div>
+    </div>
+</body>
+</html>

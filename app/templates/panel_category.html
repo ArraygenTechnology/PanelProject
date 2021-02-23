@@ -1,0 +1,291 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{panel_info.name}} Panel Details</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+             <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+              <li class="breadcrumb-item active">{{panel_info.name}} Panel Details</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        {% include "flash_alert.html" ignore missing %}
+        <div class="row">
+         
+
+            <div class="col-md-12">
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-list"></i>
+                   Category
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-6">                      
+                      <form action="{% if category is defined %}/category_add_update_{{category.id}}{% else %}/category_add_update{% endif %}" method="post">   
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                 
+                        <input type="hidden" name="panel_id" value="{{panel_info.id}}">
+                        <div class="col-sm-12">
+                          <!-- checkbox -->
+                          <div class="row">
+                            <div class="col-sm-9">
+                              <div class="form-group">
+                                  <label> Category Name : </label>
+                                  <input type="text" class="form-control" placeholder="Enter Category Name" name="name"  value="{% if category is defined %}{{ category.name }}{% endif %}" required >
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label> Rank : </label>
+                                    <input type="number" class="form-control" name="rank"  value="{% if category is defined %}{{ category.rank }}{% endif %}" required >
+                                </div>
+                            </div>
+                          </div>
+                        </div>   
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-sm-9">
+                              <!-- checkbox -->
+                                <div class="form-group">
+                                    <label> Icon : </label> <a class="float-right" href="https://fontawesome.com/v4.7.0/icons/" target="_blank"> Click Here to See Icon</a>
+                                    <input type="text" class="form-control" placeholder='Ex : fa-address-book' name="icon_img"  value="{% if category is defined %}{{ category.icon_img }}{% endif %}" required >
+                                </div>
+                            </div>   
+                            <div class="col-sm-3">
+                              <!-- checkbox -->
+                                <div class="form-group">
+                                    <label> Color : </label>
+                                    <input type="color" class="form-control" name="color"  value="{% if category is defined %}{{ category.color }}{% endif %}" required >
+                                </div>
+                            </div>   
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                        </div>  
+
+                      </form>
+                    </div>
+                    <div class="col-sm-6">
+                      
+                      <ul class="todo-list" data-widget="todo-list">
+                         {% for category in categories %}
+                        <li>
+                          <span class="p-2 rounded text-light text-center" style="background-color:{{category.color}};" ><i style="width: 20px;"class='fas {{category.icon_img|safe}}'></i></span>
+                          <!-- todo text -->
+                          <span class="text">{{category.name}} , <b> Rank : </b>{{category.rank}}</span>
+                          <!-- General tools such as edit or delete-->
+                          <span class="float-right">
+                            <a href="panel_category_{{panel_info.id}}_{{category.id}}"> <i class="fas fa-edit"></i> </a> &nbsp;
+                            <a href="category_delete_{{panel_info.id}}/{{category.id}}" class="text-danger" onclick="return confirm('Are you sure you want to delete this category?');"> <i class="fas fa-trash"></i> </a>
+                          </span>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <!--  /.Card Body -->  
+              </div>
+             <!--  /.Card -->         
+            </div>
+            <!-- sm-* end -->
+
+
+            <div class="col-md-12">
+              <!--  -->
+              <!-- Form Element sizes -->
+              <div class="card card-success card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                  <i class="nav-icon fas fa-list-alt"></i>
+                   Traits
+                  </h3>
+                  <div class="card-tools">
+                    <a href="/view_traits_{{panel_info.id}}" class="btn btn-sm btn-warning">View All Traits</a>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% if trait is defined %}/trait_add_update_{{trait.id}}{% else %}/trait_add_update{% endif %}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />  
+                        <input type="hidden" name="panel_id" value="{{panel_info.id}}">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <!-- checkbox -->
+                              {% set category_name = '' %}
+                              {% if trait is defined %}
+                              {% set categry_name = trait.category_id %}
+                              {% endif %}
+                              <div class="form-group">
+                                  <label> Category Name : </label>
+                                  <select class="form-control" name="category_id">
+                                    <option value="">-- Select Category --</option>
+                                    {% for category in categories %}
+                                      <option value="{{category.id}}" {% if category.id == categry_name %} selected {% endif %}>{{category.name}}</option>
+                                    {% endfor %}
+                                  </select>
+                                    <!-- 
+                                    <input type="text" class="form-control" placeholder="Enter Category Name" name="name"  value="{% if category is defined %}{{ category.name }}{% endif %}" required > -->
+                                </div>
+                            </div>   
+                             <div class="col-sm-3">
+                              <!-- checkbox -->
+                                <div class="form-group">
+                                    <label> Trait Name : </label>
+                                    <input type="text" class="form-control" placeholder="Enter Trait Name" name="name" value="{% if trait is defined %}{{ trait.name }}{% endif %}" required >
+                                </div>
+                            </div>   
+                            {% if trait is defined %}
+                            <div class="col-sm-2">
+                               <img  src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" class="img-fluid">
+                            </div>
+                            {% endif %}
+                            <div class="col-sm-3">
+                              <!-- checkbox -->
+                              <div class="form-group">
+                                <label for="exampleInputFile">Photo</label> 
+                                <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="exampleInputFile" accept="image/*" name="icon_img" value="{% if trait is defined %}{{ trait.icon_img }}{% endif %}">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose {% if trait is defined %} Another {% endif %} file</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% set source_status = '' %}
+                            {% if trait is defined %}
+                            {% set source_status = trait.source_status %}
+                            {% endif %}
+                            <div class="col-sm-3">
+                              <br/>
+                                <div class="form-group">
+                                  <div class="form-group">
+                                    <div class="custom-control custom-radio">
+                                      <input class="custom-control-input" type="radio" id="customRadio1" value="Yes" {% if source_status=='Yes' %} checked {% endif %} name="source_status" required="">
+                                      <label for="customRadio1" class="custom-control-label">Include Dietary Source </label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                      <input class="custom-control-input" type="radio" id="customRadio2" name="source_status"  {% if source_status=='No' %} checked {% endif %}  value="No">
+                                      <label for="customRadio2" class="custom-control-label">Include What To Do</label>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">   
+                              <div class="form-group">
+                                <label>Trait Description : </label>
+                                 <textarea id="editor2" name="about">{% if trait is defined %}{{ trait.about }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                                <label>Typical Result : </label>
+                                 <textarea id="editor6" name="typical_res">{% if trait is defined %}{{ trait.typical_res }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                                <label>Slightly Enchanced Result: </label>
+                                 <textarea id="editor8" name="slightly_enhanced_res">{% if trait is defined %}{{ trait.slightly_enhanced_res }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                                <label>Enchanced Result : </label>
+                                 <textarea id="editor7" name="enhanced_res">{% if trait is defined %}{{ trait.enhanced_res }}{% endif %}</textarea>
+                              </div>
+                            </div>
+                            <div class="col-sm-12">   
+
+                              <div class="card card-default collapsed-card">
+                                <div class="card-header">
+                                  <h3 class="card-title">Dietary Sources </h3>
+
+                                  <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                      <i class="fas fa-plus"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body" style="display: none;">                                  
+                                  <div class="form-group">
+                                    <label> Plant: </label>
+                                     <textarea id="editor1" name="source_plant">{% if trait is defined %}{{ trait.source_plant }}{% endif %}</textarea>
+                                  </div>
+
+                                  <div class="form-group">
+                                    <label>Animal : </label>
+                                     <textarea id="editor3" name="source_animal">{% if trait is defined %}{{ trait.source_animal }}{% endif %}</textarea>
+                                  </div>
+
+                                  <div class="form-group">
+                                    <label>Others : </label>
+                                     <textarea id="editor4" name="source_others">{% if trait is defined %}{{ trait.source_others }}{% endif %}</textarea>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-sm-12">   
+
+                              <div class="card card-default collapsed-card">
+                                <div class="card-header">
+                                  <h3 class="card-title">What To Do</h3>
+
+                                  <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                      <i class="fas fa-plus"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body" style="display: none;">        
+                                  <div class="form-group">
+                                     <textarea id="editor5" name="what_to_do">{% if trait is defined %}{{ trait.what_to_do }}{% endif %}</textarea>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                            </div> 
+                          </div>
+                        </div>
+
+                    </form>             
+                </div>
+                <!--  /.Card Body -->  
+              </div>
+             <!--  /.Card -->         
+            </div>
+            <!-- sm-* end -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock %}

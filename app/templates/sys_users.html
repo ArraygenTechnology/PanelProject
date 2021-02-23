@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{% if user is defined %}Edit{% else %}Add{% endif %} Users</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">{% if user is defined %}Edit{% else %}Add{% endif %} Users</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+         <div class="col-md-12">
+            <!-- Form Element sizes -->
+            <div class="card card-success card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                 {% if user is defined %}Edit{% else %}Add{% endif %}  User
+                </h3>
+              </div>
+              <div class="card-body">
+                
+                {% include "flash_alert.html" ignore missing %}
+
+                <form method="post" action="{% if user is defined %}{{ url_for('sys_users_add_update', id = user.id) }}{% else %}{{ url_for('sys_users_add_update') }}{% endif %} ">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                  <table class="table  table-sm table-borderless">
+                    <tr>
+                      <th class="text-right" style="width:25%;"><span class="text-danger">*</span> User Name : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="First Name" name="f_name"  value="{% if user is defined %}{{ user.f_name }}{% endif %}" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-4">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Last Name" name ="l_name"  value="{% if user is defined %}{{ user.l_name }}{% endif %}" required>
+                            </div>
+                          </div>
+                        </div>                 
+                      </td>
+                    </tr>
+                    {% set gender="" %}
+                    {% if user is defined %}
+                    {% set gender = user.gender %}
+                    {% endif %} 
+                    <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Gender : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <select class="form-control" name="gender" required>
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male" {% if gender == 'Male' %}selected{% endif %} >Male</option>
+                                <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if gender == 'Other' %}selected{% endif %}>Other</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right"><span class="text-danger">*</span> Date of Birth : </th>
+                      <td>
+                         <div class="row">
+                          <div class="col-sm-8">
+                           <!--  <div class="form-group">
+                                <input type="date" class="form-control dob"  value="{% if user is defined %}{{ user.dob }}{% endif %}" max="" required>                             
+                            </div> -->
+                            <div class="input-group date" id="dob" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#dob" value="{% if user is defined %}{{ user.dob }}{% endif %}" name="dob" required />
+                                <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Contact Number : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Enter Contact Number" name="contact_no"  value="{% if user is defined %}{{ user.contact_no }}{% endif %}" required >
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Password: </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="password" id ="password" class="form-control" placeholder="Enter Password" value="{% if user is defined %}{{ user.password }}{% endif %}"  name="password" required>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Confirm Password : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="password" id ="confirm_password" class="form-control" placeholder="Enter Confirm Password" value="{% if user is defined %}{{ user.password }}{% endif %}" required>
+                              <span id="password-error" class="error invalid-feedback"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                     <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Email Address : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="email" class="form-control" placeholder="Enter Email Address"  value=" {% if user is defined %}{{ user.email }}{% endif %} " name="email" required>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Address : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <textarea class="form-control" rows="3" placeholder="Enter Address" name="address">{% if user is defined %}{{ user.address }}{% endif %}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {% set role="" %}
+                    {% if user is defined %}
+                    {% set role = user.role %}
+                    {% endif %} 
+                    <tr>
+                      <th class="text-right "><span class="text-danger">*</span> Role : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <select class="form-control" name="role" required>
+                                <option value="">-- Select Role --</option>
+                                <option value="Admin" {% if role == 'Admin' %}selected{% endif %}>Admin</option>
+                                <option value="Physician" {% if role == 'Physician' %}selected{% endif %}>Physician</option>
+                                <option value="Technician" {% if role == 'Technician' %}selected{% endif %}>Technician</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right "> </th>
+                      <td class="text-right ">
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+          </div>
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    
+{% endblock %}
